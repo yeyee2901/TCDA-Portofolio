@@ -1,0 +1,13 @@
+# Portofolio Data Analysis - Trial Course Data Analytics
+- **Analyst**: Gabriel SH (yeyee)
+- **Tutor**: `geeked.id` 
+  - [Medium.com](https://medium.com/@geeked.id)
+  - [Instagram](https://www.instagram.com/geeked.id/)
+- **Python**
+  - Using Jupyter Notebook
+  - Dataset: [Sexual and/or physical Violence on women](https://www.kaggle.com/utkarshxy/who-worldhealth-statistics-2020-complete/code?datasetId=1036434&searchQuery=sexual)
+  - Source: [kaggle.com/utkarshxy](https://kaggle.com/utkarshxy)  
+- **R**
+  - Using R-Markdown
+  - Dataset: [Yu-Gi-Oh! Data from Yu-Gi-Oh! Fandom Wiki](https://www.kaggle.com/jpalmer2/parsing-yugioh-tcg-data-from-the-yugioh-wiki?select=Yugioh_test_12.csv)
+  - Source: [kaggle.com/jpalmer2](https://kaggle.com/jpalmer2)
