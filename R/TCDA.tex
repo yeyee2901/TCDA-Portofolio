@@ -1,0 +1,323 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Yu-Gi-Oh! Meets Data Analysis!},
+  pdfauthor={Gabriel SH (yeye), tutored by Geeked.id},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Yu-Gi-Oh! Meets Data Analysis!}
+\author{Gabriel SH (yeye), tutored by Geeked.id}
+\date{9/9/2021}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{introduction}{%
+\section{1. Introduction}\label{introduction}}
+
+\hypertarget{a-bit-about-me}{%
+\subsection{1.1 A Bit About Me}\label{a-bit-about-me}}
+
+Hellow, I'm Gabriel, but you may call me Yeye for convenience, and I
+would prefer you to call me that :)
+
+\hypertarget{a-bit-about-yu-gi-oh}{%
+\subsection{1.2 A bit about Yu-Gi-Oh!}\label{a-bit-about-yu-gi-oh}}
+
+In this portofolio builder, I would like to to analyze
+\textbf{Yu-Gi-Oh!} card game, spesifically the TCG (English) version.
+YGO is in my kind of \emph{biased} opinion, the best card game I've ever
+played, and I stumbled upon this dataset by chance.
+
+Sadly though, I have left playing it since long ago because of
+\textbf{money} issues. If you don't know, a single card can cost a
+maximum of \textbf{Rp 1.000.000}, or maybe more.
+
+\hypertarget{a-little-note-about-this-portofolio}{%
+\subsection{1.3 A Little Note About This
+Portofolio}\label{a-little-note-about-this-portofolio}}
+
+In this portofolio, I want to explore \texttt{tidyverse}, which is R
+package (more like a bundle), that can \texttt{generalize} the style of
+data analysis using R, since many people have different coding styles /
+approach, using \texttt{tidyverse} makes the code style uniform and much
+more simple and easy to understand.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#install.packages("tidyverse")}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\hypertarget{meet-the-data}{%
+\section{2. Meet The Data}\label{meet-the-data}}
+
+\hypertarget{dataset-brief}{%
+\subsection{2.1 Dataset Brief}\label{dataset-brief}}
+
+The datasets are provided by
+\href{https://www.kaggle.com/jpalmer2}{James Palmer} from
+\texttt{kaggle.com}, and the data itself was scraped from
+\href{https://yugioh.fandom.com/wiki/Yu-Gi-Oh!}{Yu-Gi-Oh! Fandom Wiki}.
+It consist of 4 files, which upon slight inspection, it's actually quite
+similar.
+
+\hypertarget{dataset-characteristics}{%
+\subsection{2.2 Dataset Characteristics}\label{dataset-characteristics}}
+
+\hypertarget{parameters}{%
+\subsubsection{2.2.1 Parameters}\label{parameters}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Name} : Card name
+\item
+  \textbf{Card.Type} : Monster / Spell / Trap card
+\item
+  \textbf{Attribute} : Monster Attribute (LIGHT, DARK, EARTH, WATER,
+  etc)
+\item
+  \textbf{Monster.Type} : Monster type (Fairy, Zombie, Fiend, Pyro,
+  etc), also represents the Monster Type (Synchro, Effect, Xyz, etc)
+\item
+  \textbf{Level.Rank} : Monster Level / Xyz Monster Rank
+\item
+  \textbf{ATK.DEF} : ATK \& DEF of the monster
+\item
+  \textbf{Passcode} : Card code printed on the bottom left side
+\item
+  \textbf{Materials\ldots Ritual.spell} : Material for Synchro Monsters
+  / Fusion Monsters / Xyz Monsters / Link Monsters
+\item
+  \textbf{Effect.Type} : This is a bit complex, but I can give you an
+  easy example, suppose it's \emph{Continuous} , then as long as that
+  card is face up on the field, the effect will remain.
+\item
+  \textbf{Effect} : The actual effect of the card printed on it.
+\item
+  \textbf{Spell.Trap.type} : The type of the Spell/Trap card, like
+  \emph{Equip} / \emph{Continuous} / \emph{Ritual} / etc
+\item
+  \textbf{TCG.sets} : This represents the package code where the card
+  originated from. A package can be a \emph{Structure Deck} ,
+  \emph{Collector Tin} , \emph{Booster Pack} , etc. A card may have more
+  than 1 package code because there's a possibility of ``Reprinting''
+  the card to introduce lower money-cost
+\item
+  \textbf{Ban\_list} : Banlist status of the card, either
+  \emph{Unlimited} / \emph{Semi Limited} / \emph{Limited} /
+  \emph{Forbidden}
+\item
+  \textbf{Number.of.sets} : If it's more than 1, then the card has
+  already been reprinted.
+\item
+  \textbf{Link.Arrows} : The direction of \emph{Link Arrow} for Link
+  Monster, it's octagonal (8-way) and may consist of more than 1 arrow.
+  The number of arrows also represents the \textbf{Link Rating}, which
+  is like Level / Rank for other Monster.
+\item
+  \textbf{Pendulum.Scale} : The pendulum scale of Pendulum Monsters.
+\item
+  \textbf{Set.Name} : The card package name
+\item
+  \textbf{Relase.Date} : Well\ldots{} the release date.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{names}\NormalTok{(yugi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "X"                        "Name"                    
+##  [3] "Card.type"                "Attribute"               
+##  [5] "Monster.Type"             "Level.Rank"              
+##  [7] "ATK.DEF"                  "Passcode"                
+##  [9] "Materials...Ritual.spell" "Effect.type"             
+## [11] "Effect"                   "Spell.Trap.type"         
+## [13] "TCG.sets"                 "Ban_list"                
+## [15] "Number.of.sets"           "Link.Arrows"             
+## [17] "Pendulum.Scale"           "Rarities"                
+## [19] "Set.Name"                 "Release.Date"
+\end{verbatim}
+
+\hypertarget{a-little-peek-to-the-data}{%
+\subsubsection{2.2.2 A Little Peek to the
+Data}\label{a-little-peek-to-the-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(yugi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    22293 obs. of  20 variables:
+##  $ X                       : int  0 1 2 3 4 5 6 7 8 9 ...
+##  $ Name                    : chr  "\"A\" Cell Breeding Device" "\"A\" Cell Incubator" "\"A\" Cell Recombination Device" "\"A\" Cell Scatter Burst" ...
+##  $ Card.type               : chr  "Spell " "Spell " "Spell " "Spell " ...
+##  $ Attribute               : chr  "" "" "" "" ...
+##  $ Monster.Type            : chr  "" "" "" "" ...
+##  $ Level.Rank              : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ ATK.DEF                 : chr  "" "" "" "" ...
+##  $ Passcode                : chr  "34541863" "64163367" "91231901" "73262676" ...
+##  $ Materials...Ritual.spell: chr  "" "" "" "" ...
+##  $ Effect.type             : chr  "Trigger-like" "Continuous-like, Trigger-like" "Effect, Ignition-like" "Effect" ...
+##  $ Effect                  : chr  "During each of your Standby Phases, put 1 A- Counter on 1 face-up monster your opponent controls" "Each time an A- Counter(s) is removed from play by a card effect, place 1 A- Counter on this card. When this ca"| __truncated__ "Target 1 face-up monster on the field; send 1 \" Alien\" monster from your Deck to the Graveyard, and if you do"| __truncated__ "Select 1 face-up \" Alien\" monster you control. Destroy it and distribute new A- Counters equal to its Level a"| __truncated__ ...
+##  $ Spell.Trap.type         : chr  "Continuous " "Continuous " "Quick-Play " "Quick-Play " ...
+##  $ TCG.sets                : chr  "FOTB-EN043" "GLAS-EN062" "INOV-EN063" "STON-EN041" ...
+##  $ Ban_list                : chr  "Unlimited " "Unlimited " "Unlimited " "Unlimited " ...
+##  $ Number.of.sets          : int  1 1 1 1 1 1 3 3 3 1 ...
+##  $ Link.Arrows             : chr  "" "" "" "" ...
+##  $ Pendulum.Scale          : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Rarities                : chr  "Common" "Common" "Common" "Common" ...
+##  $ Set.Name                : chr  "Force of the Breaker Sneak Peek Participation Card" "Gladiator's Assault Sneak Peek Participation Card" "Invasion: Vengeance Sneak Peek Participation Card" "Strike of Neos Sneak Peek Participation Card" ...
+##  $ Release.Date            : chr  "May 16, 2007" "November 14, 2007" "November 4, 2016" "February 28, 2007" ...
+\end{verbatim}
+
+\hypertarget{problem}{%
+\subsection{2.3 Problem}\label{problem}}
+
+Firstly, of course I will need the name of the card.
+
+\hypertarget{processing-the-data}{%
+\section{3. Processing the Data}\label{processing-the-data}}
+
+\hypertarget{data-wrangling}{%
+\subsection{3.1 Data Wrangling}\label{data-wrangling}}
+
+\hypertarget{data-visualization}{%
+\subsection{3.2 Data Visualization}\label{data-visualization}}
+
+\hypertarget{infering-the-data}{%
+\section{4. Infering the Data}\label{infering-the-data}}
+
+\hypertarget{what-we-have-got-so-far}{%
+\subsection{4.1 What We Have Got So Far}\label{what-we-have-got-so-far}}
+
+\hypertarget{conclusion}{%
+\subsection{4.2 Conclusion}\label{conclusion}}
+
+\end{document}
