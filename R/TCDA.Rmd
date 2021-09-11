@@ -37,16 +37,13 @@ that can `generalize` the style of data analysis using R, since many people have
 coding styles / approach, using `tidyverse` makes the code style uniform and much more
 simple and easy to understand.
 
-```{r include=FALSE}
-#install.packages("tidyverse")
+## 1.4 Libraries
+```{r echo=TRUE, results='hide', error=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
+library(lemon)
+library(data.table)
+library(ggplot2)
 ```
-
-
-
-
-
-
 
 
 # 2. Meet The Data
@@ -55,8 +52,9 @@ The datasets are provided by [James Palmer](https://www.kaggle.com/jpalmer2) fro
 `kaggle.com`, and the data itself was scraped from [Yu-Gi-Oh! Fandom Wiki](https://yugioh.fandom.com/wiki/Yu-Gi-Oh!). It consist of 4 files, which upon slight inspection, it's actually
 quite similar.
 
-```{r, include=FALSE }
+```{r }
 yugi <- read.csv("dataset/yugi.csv")
+View(yugi)
 ```
 
 
@@ -100,15 +98,22 @@ head(yugi, 10)
 1. What is the current trending monster **Type**?
 2. What is the current trending monster **Attribute**?
 3. Is the META still controlled by **Banlist**?
+4. Which is more preferable from **Xyz**, **Synchro**, **Pendulum**, or **Link**?
 
 ### 2.3.2 Why those 3 Problems?
 In YGO, the first 2 points are related to each other. The current META (Most
 Effective Tactic Available) is determined by these 2 points. Since the last time
 I played the game, the game has already moved into a very fast paced Monsters
 **Special Summoning** spam. Whoever sets their field with their desired Monster
-combos will likely have higher chance to win the game.
+combos will likely have higher chance to win the game. And also, I want to point out,
+KONAMI will have a higher chance to create new cards related to the current META,
+the reason was obviously for marketting. By introducing a banlist and certain cards,
+and then creating new cards that can "hopefully" be a substitute, players will have
+to have higher tendency buy them if they want their deck to stay on META. That's why
+we can infer what's in the META currently by just taking a look at the how the
+Monster Types & Attributes are currently spread out.
 
-In YGO, there's something like a family of monsters, that can be grouped together,
+In YGO, there's also something like a family of monsters, that can be grouped together,
 creating the best combo synergy when the player deck consist of only those monster groups:
 
 - Have identical / even same prefix / suffix **Name** AND/OR  
@@ -142,11 +147,10 @@ Most of the time, cards are in the banlist because they either:
 - That particular card in an **Archetype** tremendously improves the synergy & combo
 on their corresponding **Arhcetype**
 
-I can give you 1 example of 1 card, that immediately after it was released,
+I can give you 1 example of 1 card, that immediately not long after it was released,
 **ENTERS THE FORBIDDEN LIST**.
 
-Image source: [Yugipedia](https://yugipedia.com)
-```{r echo=FALSE}
+```{r echo=FALSE, out.width=400, out.height=600, fig.cap="Image source: https://yugipedia.com"}
 knitr::include_graphics("images/Firewall Dragon.png")
 ```
 The problem with this card is it's second effect: "If a monster this card points
@@ -183,10 +187,10 @@ only because this card existed.
 From the explanation above, I most likely will need things that only exist on Monster Card
 type as follows:
 
+- Monster Card Type
 - Monster Attribute
 - Monster Level/Rank (since there are Archetypes with similar level too)
 - Monster Type
-- Effect type
 - Banlist
 
 
@@ -240,8 +244,7 @@ Also I want to arrange the dataframe in way like this, starting from left-side:
 1. Attribute
 2. Monster Type
 3. Level
-4. Effect type
-5. Banlist
+4. Banlist
 
 **Determine if it is Non-Effect Monster**
 
@@ -257,8 +260,7 @@ dplyr::transmute(
   Attribute = factor(Attribute),
   Level.Rank = Level.Rank,
   Monster.Type = factor(Monster.Type),
-  Effect.type = factor(Effect.type),
-  Ban_list = factor(Ban_list)
+  Ban_list = Ban_list
 ) -> monsters_transmuted
 
 head(monsters_transmuted)
@@ -313,18 +315,18 @@ will be replaced as "Effect" hehehe :D
 
 You might be wondering types like **Union** or **Gemini** monsters and such, I
 consider this to be a "secondary" type and only signifies that it's effect has
-a certain pattern
+a certain pattern.
 
-So we need to fix that to get the true type of the monsters. We can check this
-using `%like%` from `data.table` library, and using conditional `ifelse()`. But
-on the safe side, let's create a new column first.
+The final concern, I just noticed, that the banlist, is not particularly clean,
+I don't know if it's a mistake on the raw data, but for some reason, there are
+"Effect Texts" mixed in one of the **Ban_list** data.
 
-I will create a new vector of those "true monster types", "true monster card types", 
-and then iterate through it.
+So we need to fix all of that. Firstly, for convenience we can check this using
+`%like%` from `data.table` library, and using conditional `ifelse()`. Also, to
+be on the safe side, let's create a new column first.
 
-```{r include=FALSE}
-library(data.table)
-```
+I will create a new vector of those "true monster types", "true monster card
+types", and "Ban" type, and then iterate through it.
 
 ```{r}
 monster_types <- c(
@@ -364,12 +366,20 @@ monster_card_types <- c(
   "Link"
 )
 
+ban_type <- c(
+  "Unlimited",
+  "Forbidden",
+  "Limited",
+  "Semi-Limited"
+)
+
 # head(monsters_transmuted$Monster.Type)
 
 
 # Fill with a copy of data
 monsters_transmuted$Type <- monsters_transmuted$Monster.Type
 monsters_transmuted$Card.type <- monsters_transmuted$Monster.Type
+monsters_transmuted$Banlist <- monsters_transmuted$Ban_list
 
 # iterate through the monster_types vector
 for (type in monster_types) {
@@ -389,19 +399,68 @@ for (card_type in monster_card_types) {
   )
 }
 
+for (type in ban_type) {
+  monsters_transmuted$Banlist <- ifelse(
+    monsters_transmuted$Ban_list %like% type,
+    type,
+    monsters_transmuted$Banlist
+  )
+}
+
 # Let's not forget to change it to categorical type
 monsters_transmuted$Type = factor(monsters_transmuted$Type)
-monsters_transmuted$Card.type = factor(monsters_transmuted$Card.type)
 
-head(
-  monsters_transmuted[, c("Monster.Type", "Type", "Card.type")]
-)
+head(monsters_transmuted)
 ```
 
-Now, we can drop the **Monster.Type** column, since we don't need it anymore. Also
+**Cleaning the broken banlists**
+```{r}
+monsters_fixed_banlist <- monsters_transmuted
+
+# levels(factor(monsters_fixed_banlist$Banlist))
+
+monsters_fixed_banlist[which(
+  !(
+    monsters_fixed_banlist$Banlist == "Forbidden" |
+    monsters_fixed_banlist$Banlist == "Limited" |
+    monsters_fixed_banlist$Banlist == "Semi-Limited" |
+    monsters_fixed_banlist$Banlist == "Unlimited"
+  )
+), "Banlist"] <- "Unlimited"
+
+monsters_fixed_banlist$Banlist = factor(monsters_fixed_banlist$Banlist)
+levels(monsters_fixed_banlist$Banlist)
+```
+
+**Cleaning the broken Card.type**
+```{r}
+monsters_fixed_card_type <- monsters_fixed_banlist
+
+# Change to character first, we'll change it again later
+monsters_fixed_card_type$Card.type <- as.character(monsters_fixed_card_type$Card.type)
+
+monsters_fixed_card_type[which(
+  !(
+    monsters_fixed_card_type$Card.type == "Effect" |
+    monsters_fixed_card_type$Card.type == "Fusion" |
+    monsters_fixed_card_type$Card.type == "Link" |
+    monsters_fixed_card_type$Card.type == "Pendulum" |
+    monsters_fixed_card_type$Card.type == "Ritual" |
+    monsters_fixed_card_type$Card.type == "Synchro" |
+    monsters_fixed_card_type$Card.type == "Xyz"
+  )
+), "Card.type"] <- "Effect"
+
+# let's not forget to change it back to factor
+monsters_fixed_card_type$Card.type <- factor(monsters_fixed_card_type$Card.type)
+
+levels(monsters_fixed_card_type$Card.type)
+```
+
+Now, we can drop the un-needed column, since we don't need it anymore. Also
 I'm clumsy I know, I have to re-arrange the columns again. :)
 ```{r}
-df_final <- monsters_transmuted
+df_final <- monsters_fixed_card_type
 
 df_final %>%
 dplyr::transmute(
@@ -409,15 +468,14 @@ dplyr::transmute(
   Attribute = df_final$Attribute, 
   Type = df_final$Type, 
   Level.Rank = df_final$Level.Rank, 
-  Effect.type = df_final$Effect.type, 
-  Ban_list = df_final$Ban_list
+  Banlist = df_final$Banlist
 ) -> df_final
 
 head(df_final)
 ```
 
 And finally, we can change the NA values from Level.Rank, to level 0. This also
-signifies that that monster is a **Link Monster**.
+signifies that that monster is a **Link Monster**. 
 
 ```{r}
 df_final$Level.Rank <- ifelse(
@@ -433,9 +491,6 @@ head(df_final)
 ### 3.1.4 Summary of Clean Data Frame
 I will display the summary using lemon. I like to see the summary with better visual :D
 ```{r}
-# install.packages("lemon")
-library("lemon")
-
 # Overwrites the default printing style from knit
 knit_print.table <- lemon_print
 summary(df_final)
@@ -444,5 +499,153 @@ summary(df_final)
 
 # 4. Infering the Data
 ## 4.1 Visualizing The Data
-## 4.2 What We Have Got So Far
-## 4.3 Conclusion
+### 4.1.1 Monsters Attribute & Type Distribution
+```{r}
+theme_set(theme_bw())
+
+ggplot(df_final) +
+  labs(title="Monsters Attribute & Type Distribution") +
+  geom_bar(aes(Type, fill=Attribute), width=0.7) +
+  theme(axis.text.x = element_text(angle=90, vjust=0.5))
+```
+Quite a lot we can gain here. Firstly, surprise! Dragon-type is not the winner.
+I see that KONAMI actually prefers Warrior-Type a lot, with it's notable
+Attributes: DARK, LIGHT, and EARTH. Some of you may already know what's the
+biggest, best, the most famous warrior Archetype. Yes, the "HERO" Archetype.
+
+Some of the "HERO" sub-archetype that I can think of are:
+
+- **Elemental HERO** (Warrior-type monsters with various Attributes)
+- **Destiny HERO** (Warrior-type monsters with all their member being DARK Attributes)
+- **Masked HERO** (Fusion Warrior-type monsters with a single monster material)
+- **Neos** (Fusion Warrior-type monsters that relies on "Elemental HERO - Neos", various Attributes)
+
+And here's some more notable mentions that are considered META on their prime era:
+
+- Utopia (LIGHT, Xyz oriented)
+- Phantom Knight (DARK)
+- Noble Knight (LIGHT & DARK)
+- Tellarknight (LIGHT)
+- Ignknight (not common, but I think it's the most famous FIRE-Warrior archetype)
+- Six Samurai (various)
+
+And then the second highest is Machine-type. I think I can already infer that the reason
+behind this high number of Machine & Warrior-type monsters. Possibly it's because:
+
+- **GX series** : The main character, Jaden Yuki, uses Elemental HERO as it's main deck. 
+- **5D's series** : in 5D's series, the main character, Yusei Fudo, uses an Archetype called "Synchron". And these are mainly Machines & Warrior type monsters that are geared towards fast Synchro Monsters summoning.
+- **ZeXal** : in this series, the main character, Yuma Tsukumo, uses a deck which consists mainly of Warrior-type,
+monsters.
+
+Often, demands for supporting cards for Archetypes used by main characters are high.
+No wonder KONAMI still releases overly abundant Warrior & Machine type monsters up to
+this day.
+
+
+### 4.1.2 Monster Card Type
+Let's take a look, which are more favourable, is it still Xyz monsters? I will
+filter out the ordinary Effect monsters, since they are always present in every
+deck.
+
+```{r}
+card_selection <- dplyr::filter(df_final, Card.type != "Effect")
+card_selection$Level.Rank <- factor(card_selection$Level.Rank)
+
+ggplot(card_selection) +
+  labs(title="Monster Card Type") +
+  geom_bar(aes(Card.type, fill=Level.Rank))
+```
+
+**NOTE**: I can't do much about the Link monsters being level 0, the dataset
+does not provide their Link rating.
+
+Now we see that the Xyz rank 4 is still favorable as always. I remembered the reason
+was because Rank-4 Xyz has really generic material, and many decks that
+run Level-4 Monsters can easily utilize them.
+
+To my surprise, fusion monsters are still high. Possibly this is also the side-effects
+of HERO monsters. Remember, HERO Archetype are fusion-oriented.
+
+The Synchro monsters are still high probably because Synchro based archetype are
+also very common. During the 5D's era, KONAMI drops a bombardment of new 
+Archetypes that are synchro related. And recently, I heard recently KONAMI drops
+another support for Stardust Dragon (Yusei Fudo's main monster), which means that
+Synchro oriented decks aren't going down soon.
+
+And finally, Link vs Pendulum, I see that people actually prefers Link monsters!
+Glad to hear that, I always find the ruling of Pendulum monsters quite confusing.
+But there's also this second reason...
+
+Link monsters are a MUST if your deck relies on Extra Decks (either Xyz, Synchro,
+and Fusion monsters). This is because if you don't use Link monsters as per
+the latest **Master Rule**, you can only have 1 monster that are summoned from
+Extra Deck. [Read more about this rule](https://yugioh.fandom.com/wiki/Link_Arrow)
+
+This is probably why KONAMI decides to drop a bombardment of Link monsters, despite
+Pendulum monsters came first.
+
+### 4.1.3 Monster Attribute
+Now, let's take a look at the distribution of the Attributes itself.
+
+```{r}
+ggplot(df_final) +
+  labs(title="Monster Attributes Distribution") +
+  geom_bar(aes(Attribute, fill=Attribute))
+```
+
+As we can see, the number of the Effect monsters are ranked as follows:
+
+1. DARK
+2. EARTH
+3. LIGHT
+
+There's only 1 possibility why DARK & LIGHT are at the top 3. It's because
+"Chaos" deck playstyle exist. This so-called "Chaos" deck are decks that relies
+on various DARK & LIGHT monsters, often coming from different Archetype / Type!
+And what's more amazing are, the "Chaos" deck is considered to be very versatile,
+any player with decks that can utilize DARK & LIGHT Monsters, have "Chaos" playstyle
+as one of their options!
+
+This is why KONAMI did not stop creating supports for DARK & LIGHT monsters.
+
+### 4.1.4 Monsters Level vs Banlist Relation
+```{r message=FALSE}
+theme_set(theme_bw())
+
+level_banlist_density <- ggplot(df_final) +
+  geom_density(aes(Level.Rank, fill=Banlist, alpha=0.2)) +
+  labs(title="Monsters Density by Banlist")
+
+level_banlist_density
+```
+
+The reason why I visualize the **Level / Rank** and **Banlist** together is,
+because this particular rule: "Monsters of level 5 or higher requires tributing
+(sacrificing) a monster".
+
+Think of it, monsters are mostly banned because their effects can easily change
+the tide of the duel. How scary it is to summon those monsters without tribute?
+
+Look at the density of monsters ranging from Level 2-4. Monsters labeled as
+**Forbidden** & **Limited** are obviously gathering there. This means that the
+most "favourable" monsters (favourable in YGO can be translated as = soon to be
+banned LMAO), are those that **Can be summoned easily** and because they are in the
+banlist, this means **they also have good effects**.
+
+Here are some notable monsters on the banlist:
+
+- **Yata-Garasu** - L1 (famous for deadlock during the first era of YGO 2004)
+- **Dandelion** - L3 (easy token abuse)
+- **Glow-up Bulb** - L1 (this 1 monster can create a deadly combo of 5 high level monsters in 1 turn)
+
+## 4.2 Conclusion
+- The META is still centered around these types:
+  1. Warrior-type
+  2. Machine-type
+  3. Spellcaster / Dragon
+- The META is still centered around these Attributes:
+  1. DARK
+  2. EARTH
+  3. LIGHT
+- The META is still actively controlled by banlist & level 2-4 monsters, as seen on the monster level density.
+- Pendulum monsters are the least favourable playstyle because of the new **Master Rule**
